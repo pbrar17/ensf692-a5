@@ -1,6 +1,6 @@
 # web_data_app.py
 # June 2024
-# Modified by: STUDENT NAME
+# Modified by: Pahul Brar
 #
 # An simple program for demonstrating web applications using Flask and web scraping of data using Beautiful Soup.
 # Detailed specifications are provided via the Assignment 5 README file.
@@ -19,7 +19,8 @@ import re
 
 ###
 # Initialize our FLASK application object from the Flask class like so:
-app = Flask(__name__)
+app = Flask(__name__, template_folder='')
+app.config['DEBUG'] = True
 
 @app.route("/")
 def index():
@@ -74,14 +75,16 @@ def book_data():
 
     titles = []
     prices = []
+    sale_prices = []
 
     # For each book listed on the page, get the title and the price from inside in the html data
     for book in book_results:
         titles.append(book.h3.a.get('title'))
         prices.append(float(book.find('p', class_="price_color").text[1:]))
+        sale_prices.append((float(book.find('p', class_="price_color").text[1:]))*0.75)
 
     # Create a DataFrame using the two lists
-    book_data = pd.DataFrame(list(zip(titles, prices)), columns=['Titles','Prices'])    
+    book_data = pd.DataFrame(list(zip(titles, prices,sale_prices)), columns=['Titles','Prices','Sale Prices'])    
     print(book_data)        # Print to the terminal as confirmation - only we can see this
 
     # Format and print the DataFrame using the html template provided in the templates subdirectory
@@ -90,5 +93,5 @@ def book_data():
 @app.route("/learn")
 def learn():
     # Return a string the describes one thing you learned in ENSF 692.
-    pass
+    return "I learned how to use a numpy 3D array and how to run python in terminal"
 
